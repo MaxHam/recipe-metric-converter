@@ -1,10 +1,10 @@
 import './globals.css';
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'PWA with Next 13',
   description: 'PWA application with Next 13',
   generator: 'Next.js',
