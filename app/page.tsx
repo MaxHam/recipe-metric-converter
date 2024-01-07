@@ -7,7 +7,6 @@ import EditPhoto from './EditPhoto';
 
 export default function Home() {
   const [source, setSource] = useState<string>('');
-  const [finalImageURL, setFinalImageURL] = useState<string>(source);
   const [text, setText] = useState<string>('');
 
   const handleCapture = (files: FileList | File[]) => {
@@ -15,21 +14,18 @@ export default function Home() {
       const file = files[0];
       const newUrl = URL.createObjectURL(file);
       setSource(newUrl);
+      doOCR(newUrl);
     }
+  };
+  const doOCR = (image: string) => {
+    Tesseract.recognize(image, 'eng').then(({ data: { text } }) => {
+      setText(text);
+    });
   };
 
   const handleCrop = (image: string) => {
-    console.log(image);
-    setFinalImageURL(image);
+    doOCR(image);
   };
-
-  useEffect(() => {
-    if (!finalImageURL) return;
-
-    Tesseract.recognize(finalImageURL, 'eng').then(({ data: { text } }) => {
-      setText(text);
-    });
-  }, [finalImageURL]);
 
   return (
     <main className='flex min-h-screen w-xl flex-col items-center justify-between p-5'>

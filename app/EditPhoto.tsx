@@ -18,7 +18,6 @@ export default function EditPhoto({ source, onChange }: EditPhotoProps) {
     crop: Crop | undefined,
     image: any
   ): string | undefined => {
-    console.log('cropping');
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
