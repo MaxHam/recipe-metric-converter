@@ -28,20 +28,20 @@ export default function Home() {
   };
 
   return (
-    <main className='flex min-h-screen w-xl flex-col items-center justify-between p-5'>
+    <main className='flex min-h-screen w-xl flex-col items-center justify-between pt-5 pb-5 pl-5 md:pl-64 pr-5 md:pr-64'>
       {!source && (
         <div>
-          <h1 className='scroll-m-20 text-2xl font-semibold tracking-tight'>
-            Imperial to Metric
+          <h1 className='scroll-m-20 text-4xl font-semibold tracking-tight'>
+            Recipe Metric Converter.
           </h1>
           <h2 className='scroll-m-20 text-xl font-semibold tracking-tight'>
-            Take a photo of your recipe to get started!
+            Take a photo of your recipe to get cooking!
           </h2>
         </div>
       )}
 
       {source && <EditPhoto source={source} onChange={handleCrop} />}
-      <div className='w-full grid grid-flow-row gap-2'>
+      <div className='w-full flex flex-col justify-center items-center '>
         <FileInput onChange={handleCapture} />
         {source && <ConvertMetrics text={text} />}
       </div>

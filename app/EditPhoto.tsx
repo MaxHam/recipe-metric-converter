@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import ReactCrop, { type Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
+const TO_RADIANS = Math.PI / 180;
 interface EditPhotoProps {
   source: string;
   onChange: (output: string) => void;
@@ -16,35 +17,65 @@ export default function EditPhoto({ source, onChange }: EditPhotoProps) {
 
   const cropImage = (
     crop: Crop | undefined,
-    image: any
+    image: any,
+    scale: number = 1,
+    rotation: number = 0
   ): string | undefined => {
     const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    if (!crop || !image) return;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
     const ctx = canvas.getContext('2d');
 
-    const pixelRatio = window.devicePixelRatio;
-    canvas.width = crop.width * pixelRatio;
-    canvas.height = crop.height * pixelRatio;
+    if (!ctx) {
+      throw new Error('No 2d context');
+    }
 
-    if (!ctx) return;
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    // devicePixelRatio slightly increases sharpness on retina devices
+    // at the expense of slightly slower render times and needing to
+    // size the image back down if you want to download/upload and be
+    // true to the images natural size.
+    const pixelRatio = window.devicePixelRatio;
+    // const pixelRatio = 1
+
+    if (!crop) return;
+    canvas.width = Math.floor(crop.width * scaleX * pixelRatio);
+    canvas.height = Math.floor(crop.height * scaleY * pixelRatio);
+
+    ctx.scale(pixelRatio, pixelRatio);
     ctx.imageSmoothingQuality = 'high';
 
+    const cropX = crop.x * scaleX;
+    const cropY = crop.y * scaleY;
+
+    const rotateRads = rotation * TO_RADIANS;
+    const centerX = image.naturalWidth / 2;
+    const centerY = image.naturalHeight / 2;
+
+    ctx.save();
+
+    // 5) Move the crop origin to the canvas origin (0,0)
+    ctx.translate(-cropX, -cropY);
+    // 4) Move the origin to the center of the original position
+    ctx.translate(centerX, centerY);
+    // 3) Rotate around the origin
+    ctx.rotate(rotateRads);
+    // 2) Scale the image
+    ctx.scale(scale, scale);
+    // 1) Move the center of the image to the origin (0,0)
+    ctx.translate(-centerX, -centerY);
     ctx.drawImage(
       image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
       0,
       0,
-      crop.width,
-      crop.height
+      image.naturalWidth,
+      image.naturalHeight,
+      0,
+      0,
+      image.naturalWidth,
+      image.naturalHeight
     );
+
+    ctx.restore();
 
     // Converting to base64
     const base64Image = canvas.toDataURL('image/jpeg');
@@ -68,12 +99,16 @@ export default function EditPhoto({ source, onChange }: EditPhotoProps) {
   }, [crop, image, updateOutput]);
 
   return (
-    <div className='p-2'>
-      <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
-        <img src={source} onLoad={(e) => setImage(e.target)} />
+    <div className='flex flex-col w-full items-center pb-4'>
+      <ReactCrop crop={crop} onChange={(c) => setCrop(c)} className='border-2'>
+        <img
+          className='object-cover'
+          src={source}
+          onLoad={(e) => setImage(e.target)}
+        />
       </ReactCrop>
-      <Label className='text-sm text-muted-foreground'>
-        Crop the photo so only text is visible.
+      <Label className='text-sm text-muted-foreground pt-4'>
+        Crop the photo so only text is visible for optimal results.
       </Label>
     </div>
   );

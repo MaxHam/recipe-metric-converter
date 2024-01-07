@@ -1,21 +1,30 @@
 'use client';
 
-import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import cameraCaptureIcon from '/public/camera-capture.svg';
+import { useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import { useDropzone } from 'react-dropzone';
+import { buttonVariants } from './button';
 import { Input } from './input';
 import { Label } from './label';
-import { isMobile } from 'react-device-detect';
-import { Button, buttonVariants } from './button';
+import Image from 'next/image';
+
 interface InputFileProps {
   onChange: (files: FileList | File[]) => void;
 }
 
 const desktopStyle =
-  'flex justify-center w-full h-64 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none';
+  'p-2 bg-white hover:bg-gray-100 flex justify-center items-center w-full h-64 px-4 transition border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none';
 
 export function FileInput({ onChange }: InputFileProps) {
+  const [isSSR, setIsSSR] = useState(true);
   const [file, setFile] = useState<File | null>(null);
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      if (acceptedFiles && acceptedFiles.length) {
+        handleUpload(acceptedFiles);
+      }
+    },
+  });
 
   const handleDrag = (e: any) => {
     e.preventDefault();
@@ -40,19 +49,35 @@ export function FileInput({ onChange }: InputFileProps) {
     }
   };
 
+  useEffect(() => {
+    setIsSSR(false);
+  }, []);
+
+  if (isSSR) return null;
+
   return (
-    <div className='grid w-full max-w-2xl items-center gap-1.5'>
+    <div className='w-full items-center pb-2' {...getRootProps()}>
       {!isMobile ? (
         <Label htmlFor='icon-button-file' className={desktopStyle}>
           <span className='flex justify-center items-center flex-col'>
-            Drag and drop image or <strong>browse</strong>
+            Drag and drop a recipe image or <strong>browse here</strong>
             {file && <p className='mt-2'>{file.name}</p>}
           </span>
+          {file && (
+            <div className='relative w-32 h-32'>
+              <Image
+                alt='Recipe photo preview'
+                src={file ? URL.createObjectURL(file) : ''}
+                fill
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+          )}
         </Label>
       ) : (
         <Label
           htmlFor='icon-button-file'
-          className={`${
+          className={`w-full ${
             file
               ? buttonVariants({
                   variant: 'outline',
@@ -79,6 +104,7 @@ export function FileInput({ onChange }: InputFileProps) {
           }
         }}
         className='hidden'
+        {...getInputProps()}
       />
     </div>
   );

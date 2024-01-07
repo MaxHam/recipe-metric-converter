@@ -1,20 +1,17 @@
 'use client';
-import { MetricDropdown } from '@/components/metric-dropdown';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { ArrowRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import parse from 'html-react-parser';
-import { Chunk, findAll } from '@/lib/chunks';
-import { convert, imperialToMetricSystem, keywords } from '@/lib/metrics';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { Chunk, findAll } from '@/lib/chunks';
+import { convert, keywords } from '@/lib/metrics';
+import parse from 'html-react-parser';
+import { useEffect, useState } from 'react';
 
 interface ConvertMetricsProps {
   text: string;
@@ -76,18 +73,18 @@ export default function ConvertMetrics({ text }: ConvertMetricsProps) {
       >
         Convert metrics
       </DialogTrigger>
-      <DialogContent className='h-full max-h-screen'>
+      <DialogContent>
         <p className='whitespace-pre-line'>{parse(`${formattedHTML}`)}</p>
-        <DialogFooter className='flex-col justify-end'>
-          <Separator />
-          <div className='flex flex-row justify-center items-center mt-2'>
+        <DialogFooter className='flex-col flex'>
+          <div className='flex justify-flex-start items-center'>
             <Switch
               id='conversion-mode'
               checked={isConverted}
               onCheckedChange={handleSwitchChange}
-              className='mr-2'
             />
-            <Label htmlFor='conversion-mode'>Conversion</Label>
+            <Label htmlFor='conversion-mode' className='pl-2'>
+              {isConverted ? 'Converted' : 'Original'}
+            </Label>
           </div>
         </DialogFooter>
       </DialogContent>
