@@ -12,20 +12,7 @@ interface EditPhotoProps {
 }
 
 export default function EditPhoto({ source }: EditPhotoProps) {
-  const [open, setOpen] = useState<boolean>(false);
   const [crop, setCrop] = useState<Crop>();
-
-  useEffect(() => {
-    if (source) {
-      setOpen(true);
-    }
-  }, [source]);
-
-  const handleOpenChange = () => {
-    setOpen(!open);
-  };
-
-  console.log(crop);
 
   return (
     <div className='p-2'>

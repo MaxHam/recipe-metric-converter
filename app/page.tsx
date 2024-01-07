@@ -6,12 +6,20 @@ import { isMobile } from 'react-device-detect';
 import Tesseract from 'tesseract.js';
 import EditPhoto from './EditPhoto';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { MetricDropdown } from '@/components/metric-dropdown';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import ConvertMetrics from './ConvertMetrics';
 
 export default function Home() {
   const [source, setSource] = useState<string>('');
   const [text, setText] = useState<string>('');
-  const [open, setOpen] = useState<boolean>(false);
 
   const handleCapture = (files: FileList | File[]) => {
     if (files) {
@@ -19,54 +27,30 @@ export default function Home() {
       const newUrl = URL.createObjectURL(file);
       setSource(newUrl);
 
-      Tesseract.recognize(file, 'eng', { logger: (m) => console.log(m) }).then(
-        ({ data: { text } }) => {
-          setText(convertMetrics(text));
-        }
-      );
+      Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+        setText(text);
+      });
     }
-  };
-
-  const convertMetrics = (text: string) => {
-    const keywords = ['teaspoon', 'tablespoon', 'cup', 'pound', 'ounce'];
-    let result = text;
-
-    for (const keyword of keywords) {
-      if (result.includes(keyword)) {
-        result = result.replace(keyword, keyword.toLocaleUpperCase());
-      }
-    }
-
-    return result;
   };
 
   return (
     <main className='flex min-h-screen w-xl flex-col items-center justify-between p-5'>
       {!source && (
-        <h3 className='scroll-m-20 text-2xl font-semibold tracking-tight'>
-          Take a photo of your recipe to get started!
-        </h3>
+        <div>
+          <h1 className='scroll-m-20 text-2xl font-semibold tracking-tight'>
+            Imperial to Metric
+          </h1>
+          <h2 className='scroll-m-20 text-xl font-semibold tracking-tight'>
+            Take a photo of your recipe to get started!
+          </h2>
+        </div>
       )}
 
       {source && <EditPhoto source={source} />}
       <div className='w-full grid grid-flow-row gap-2'>
         <FileInput onChange={handleCapture} />
-        {source && (
-          <Dialog open={open} onOpenChange={() => setOpen(!open)}>
-            <DialogTrigger className='w-full'>
-              <Button className='w-full'>Convert metrics</Button>
-              <DialogContent>
-                <p className='text-2xl whitespace-pre-line'>{`${text}`}</p>
-              </DialogContent>
-            </DialogTrigger>
-          </Dialog>
-        )}
+        {source && <ConvertMetrics text={text} />}
       </div>
-      {/* {text && (
-        <div className='w-96 h-96 overflow-auto'>
-          <p className='text-2xl whitespace-pre-line'>{`${text}`}</p>
-        </div>
-      )} */}
     </main>
   );
 }
