@@ -1,24 +1,13 @@
 'use client';
 import { FileInput } from '@/components/ui/file-input';
-import Image from 'next/image';
-import { useState } from 'react';
-import { isMobile } from 'react-device-detect';
+import { useEffect, useState } from 'react';
 import Tesseract from 'tesseract.js';
-import EditPhoto from './EditPhoto';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { MetricDropdown } from '@/components/metric-dropdown';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 import ConvertMetrics from './ConvertMetrics';
+import EditPhoto from './EditPhoto';
 
 export default function Home() {
   const [source, setSource] = useState<string>('');
+  const [finalImageURL, setFinalImageURL] = useState<string>(source);
   const [text, setText] = useState<string>('');
 
   const handleCapture = (files: FileList | File[]) => {
@@ -26,12 +15,21 @@ export default function Home() {
       const file = files[0];
       const newUrl = URL.createObjectURL(file);
       setSource(newUrl);
-
-      Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
-        setText(text);
-      });
     }
   };
+
+  const handleCrop = (image: string) => {
+    console.log(image);
+    setFinalImageURL(image);
+  };
+
+  useEffect(() => {
+    if (!finalImageURL) return;
+
+    Tesseract.recognize(finalImageURL, 'eng').then(({ data: { text } }) => {
+      setText(text);
+    });
+  }, [finalImageURL]);
 
   return (
     <main className='flex min-h-screen w-xl flex-col items-center justify-between p-5'>
@@ -46,7 +44,7 @@ export default function Home() {
         </div>
       )}
 
-      {source && <EditPhoto source={source} />}
+      {source && <EditPhoto source={source} onChange={handleCrop} />}
       <div className='w-full grid grid-flow-row gap-2'>
         <FileInput onChange={handleCapture} />
         {source && <ConvertMetrics text={text} />}
