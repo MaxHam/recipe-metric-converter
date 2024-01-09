@@ -1,7 +1,3 @@
-// @flow
-
-import { parse } from 'path';
-
 export type Chunk = {
   highlight: boolean;
   start: number;
@@ -78,6 +74,37 @@ export const combineChunks = ({ chunks }: { chunks: Chunk[] }) => {
     }, []);
 };
 
+const getMetricValue = (str: string): number => {
+  // fractions
+  if (str.includes('/')) {
+    let split = str.split('/');
+    let a = getMetricValue(split[0]);
+    let b = getMetricValue(split[1]);
+    // check for 0, NaN, Infinity, etc.
+    if (a && b) return a / b;
+  }
+
+  // ranges
+  if (str.includes('-')) {
+    let split = str.split('-');
+    let a = getMetricValue(split[0]);
+    let b = getMetricValue(split[1]);
+    // check for 0, NaN, Infinity, etc.
+    if (a && b) return (a + b) / 2;
+  }
+
+  // spaces
+  if (str.includes(' ')) {
+    let split = str.split(' ');
+    let a = getMetricValue(split[0]);
+    let b = getMetricValue(split[1]);
+    // check for 0, NaN, Infinity, etc.
+    if (a && b) return a + b;
+  }
+
+  return parseInt(str, 10);
+};
+
 /**
  * Examine text for any matches.
  * If we find matches, add them to the returned array as a "chunk" object ({start:number, end:number}).
@@ -108,7 +135,7 @@ const defaultFindChunks = ({
       }
 
       const regex = new RegExp(
-        `(\\d+)\\s*${searchWord}s*`,
+        `(\\d*(-*|/*)\\d+)*\\s*${searchWord}s*`,
         caseSensitive ? 'g' : 'gi'
       );
 
@@ -117,6 +144,14 @@ const defaultFindChunks = ({
         let start = match.index;
         let end = regex.lastIndex;
 
+        let value;
+
+        if (match[1]) {
+          value = getMetricValue(match[1]);
+        }
+
+        console.log(match, value);
+
         // We do not return zero-length matches
         if (end > start) {
           chunks.push({
@@ -124,7 +159,7 @@ const defaultFindChunks = ({
             start,
             end,
             metric: searchWord,
-            value: parseInt(match[1]),
+            value,
           });
         }
 

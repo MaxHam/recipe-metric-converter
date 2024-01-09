@@ -1,7 +1,8 @@
 /**
- * TODO: Cover ranges like 1-2 cups
- * TODO: Cover fractions like 1/2 cup
+ * TODO: Cover cases like 1 1/2 tsp
  * TODO: Try to mitigate weird text detections for dashes "-" -> "e" after OCR
+ * TODO: consider supporting shortforms like "tsp" and "tbsp" as well
+ * TODO: decide when to use gram or liter
  *
  */
 
