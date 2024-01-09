@@ -135,7 +135,7 @@ const defaultFindChunks = ({
       }
 
       const regex = new RegExp(
-        `(\\d*(-*|/*)\\d+)*\\s*${searchWord}s*`,
+        `(\\d*(-*|/*)\\d+)*\\s*${searchWord}s*\\s+`,
         caseSensitive ? 'g' : 'gi'
       );
 
@@ -149,8 +149,6 @@ const defaultFindChunks = ({
         if (match[1]) {
           value = getMetricValue(match[1]);
         }
-
-        console.log(match, value);
 
         // We do not return zero-length matches
         if (end > start) {

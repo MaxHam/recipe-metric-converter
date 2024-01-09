@@ -25,33 +25,9 @@ interface ConvertMetricsProps {
 export default function ConvertMetrics({ text }: ConvertMetricsProps) {
   const [formattedHTML, setFormattedHTML] = useState<string>('');
   const [open, setOpen] = useState<boolean>(false);
-  const [isConverted, setIsConverted] = useState<boolean>(true);
+  const [isConverted, setIsConverted] = useState<boolean>(false);
 
   useEffect(() => {
-    const text = `
-    2 cups (240 g) all-purpose flour
-    
-    2 cups (396 g) sugar
-    
-    3/4 cup (63 g) unsweetened cocoa powder
-    
-    2-3 teaspoons (8 g) baking powder
-    
-    1 1/2 teaspoons (9 g) baking soda
-    
-    1teaspoon (2.8 g) kosher salt
-    
-    1 teaspoon (2.3 g) espresso powder, homemade or store-bought
-    1 cup (227 g) milk, or buttermilk, almond, or coconut milk
-    
-    1/2 cup (99 g) vegetable oil, or canola oil, or melted coconut oil
-    2 large (100 g) eggs
-    
-    2 teaspoons (9.4 g) vanilla extract
-    
-    1 cup (227. g) boiling water
-    
-    Chocolate Buttercream Frosting Recipe`;
     const chunks: { end: any; highlight: any; start: any }[] =
       findMetrics(text);
 

@@ -1,18 +1,22 @@
 /**
  * TODO: Cover cases like 1 1/2 tsp
  * TODO: Try to mitigate weird text detections for dashes "-" -> "e" after OCR
- * TODO: consider supporting shortforms like "tsp" and "tbsp" as well
  * TODO: decide when to use gram or liter
  *
  */
 
 export const keywords = [
   'teaspoon',
+  'tsp',
   'tablespoon',
+  'tbsp',
   'cup',
   'pound',
+  'lb',
   'ounce',
+  'oz',
   'inch',
+  'in',
 ];
 
 export const imperialToMetricSystem: {
@@ -23,19 +27,24 @@ export const imperialToMetricSystem: {
   };
 } = {
   teaspoon: { metric: 'ml', fn: (value: number) => value * 5, color: 'red' },
+  tsp: { metric: 'ml', fn: (value: number) => value * 5, color: 'red' },
   tablespoon: {
     metric: 'ml',
     fn: (value: number) => value * 15,
     color: 'orange',
   },
+  tbsp: { metric: 'ml', fn: (value: number) => value * 15, color: 'orange' },
   cup: { metric: 'ml', fn: (value: number) => value * 240, color: 'yellow' },
   pound: {
     metric: 'g',
     fn: (value: number) => value * 453.592,
     color: 'green',
   },
+  lb: { metric: 'g', fn: (value: number) => value * 453.592, color: 'green' },
   ounce: { metric: 'g', fn: (value: number) => value * 28.3495, color: 'blue' },
+  oz: { metric: 'g', fn: (value: number) => value * 28.3495, color: 'blue' },
   inch: { metric: 'cm', fn: (value: number) => value * 2.54, color: 'purple' },
+  in: { metric: 'cm', fn: (value: number) => value * 2.54, color: 'purple' },
 };
 
 export const convert = (value: number | undefined, from: string): string => {
