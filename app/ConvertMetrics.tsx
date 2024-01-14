@@ -95,24 +95,28 @@ export default function ConvertMetrics({ text }: ConvertMetricsProps) {
         Convert metrics
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader className='flex flex-row justify-between items-center pt-6'>
-          <h4 className='pr-2 scroll-m-20 text-xl font-semibold tracking-tight'>
-            {!isConverted ? (
-              <mark className='bg-orange-200 pr-1 pl-1'>Original</mark>
-            ) : (
-              <mark className='bg-yellow-200 pr-1 pl-1'>Converted</mark>
-            )}{' '}
-            Recipe
-          </h4>
-          <Switch
-            id='conversion-mode'
-            checked={isConverted}
-            disabled={formattedHTML.length < 1}
-            onCheckedChange={handleSwitchChange}
-          />
+        <DialogHeader>
+          <div className='flex flex-row justify-between pt-6'>
+            <h4 className='pr-2 scroll-m-20 text-xl font-semibold tracking-tight'>
+              {!isConverted ? (
+                <mark className='bg-orange-200 pr-1 pl-1'>Original</mark>
+              ) : (
+                <mark className='bg-yellow-200 pr-1 pl-1'>Converted</mark>
+              )}{' '}
+              Recipe
+            </h4>
+            <Switch
+              id='conversion-mode'
+              checked={isConverted}
+              disabled={formattedHTML.length < 1}
+              onCheckedChange={handleSwitchChange}
+            />
+          </div>
+
+          <Separator className='mb-2' />
         </DialogHeader>
-        <Separator className='mb-2' />
-        <p className='whitespace-pre-line'>
+
+        <p className='whitespace-pre-line block'>
           {formattedHTML.length < 1
             ? 'Converting ...'
             : formattedHTML.map((piece) => parse(`${piece}`, parserOptions))}

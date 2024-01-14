@@ -75,7 +75,10 @@
   }
 }
 
-main,
-.dialog {
+main {
   height: 100dvh;
+}
+
+.dialog {
+  max-height: 100dvh;
 }

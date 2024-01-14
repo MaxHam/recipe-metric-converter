@@ -1,6 +1,8 @@
 /**
  * TODO: Cover cases like 1 1/2 tsp
  * TODO: add saving to local storage
+ * TODO: https://medium.com/designly/creating-an-install-to-home-screen-prompt-in-a-next-js-progressive-web-app-588a3e7a6747
+ * TODO: add reverse conversion
  */
 
 export const keywords = [
