@@ -4,10 +4,9 @@ import { buttonVariants } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
+  DialogHeader,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Chunk, findAll } from '@/lib/chunks';
@@ -96,7 +95,7 @@ export default function ConvertMetrics({ text }: ConvertMetricsProps) {
         Convert metrics
       </DialogTrigger>
       <DialogContent>
-        <div className='flex justify-between items-center pt-6'>
+        <DialogHeader className='flex flex-row justify-between items-center pt-6'>
           <h4 className='pr-2 scroll-m-20 text-xl font-semibold tracking-tight'>
             {!isConverted ? (
               <mark className='bg-orange-200 pr-1 pl-1'>Original</mark>
@@ -111,7 +110,7 @@ export default function ConvertMetrics({ text }: ConvertMetricsProps) {
             disabled={formattedHTML.length < 1}
             onCheckedChange={handleSwitchChange}
           />
-        </div>
+        </DialogHeader>
         <Separator className='mb-2' />
         <p className='whitespace-pre-line'>
           {formattedHTML.length < 1

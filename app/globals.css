@@ -75,6 +75,7 @@
   }
 }
 
-main {
+main,
+.dialog {
   height: 100dvh;
 }
