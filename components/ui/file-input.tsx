@@ -24,6 +24,9 @@ export function FileInput({ onChange }: InputFileProps) {
         handleUpload(acceptedFiles);
       }
     },
+    accept: { 'image/png': [], 'image/jpeg': [], 'image/jpg': [] },
+    maxFiles: 1,
+    noClick: isMobile, // https://stackoverflow.com/questions/54019106/react-allow-user-to-add-file-from-gallery-or-camera#:~:text=The%20right%20answer%20is%20that,supported%20by%20all%20mobile%20devices.
   });
 
   const handleDrag = (e: any) => {
@@ -59,7 +62,7 @@ export function FileInput({ onChange }: InputFileProps) {
     <div className='w-full items-center pb-2' {...getRootProps()}>
       {!isMobile ? (
         <Label htmlFor='icon-button-file' className={desktopStyle}>
-          <span className='flex justify-center items-center flex-col'>
+          <span className='flex justify-center items-center flex-col p-2'>
             Drag and drop a recipe image or <strong>browse here</strong>
             {file && <p className='mt-2'>{file.name}</p>}
           </span>
@@ -94,10 +97,7 @@ export function FileInput({ onChange }: InputFileProps) {
       <Input
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        accept='image/*'
         id='icon-button-file'
-        type='file'
-        capture='environment'
         onChange={(e) => {
           if (e.target.files && e.target.files.length) {
             handleUpload(e.target.files);

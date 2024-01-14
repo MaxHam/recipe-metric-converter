@@ -99,16 +99,25 @@ export default function EditPhoto({ source, onChange }: EditPhotoProps) {
   }, [crop, image, updateOutput]);
 
   return (
-    <div className='flex flex-col w-full items-center pb-4'>
-      <ReactCrop crop={crop} onChange={(c) => setCrop(c)} className='border-2'>
-        <img
-          className='object-cover'
-          src={source}
-          onLoad={(e) => setImage(e.target)}
-        />
+    <div className='flex flex-col justify-start pb-4 w-full'>
+      <ReactCrop
+        crop={crop}
+        onChange={(c) => setCrop(c)}
+        className='border-2'
+        minWidth={20}
+        minHeight={20}
+        style={{
+          maxHeight: '700px',
+          overflow: 'hidden',
+          width: 'fit-content',
+        }}
+      >
+        <img src={source} onLoad={(e) => setImage(e.target)} />
       </ReactCrop>
-      <Label className='text-sm text-muted-foreground pt-4'>
-        Crop the photo so only text is visible for optimal results.
+
+      <Label className='text-sm text-muted-foreground pt-2'>
+        Crop out bullet point markers and other non-text elements for optimal
+        results.
       </Label>
     </div>
   );

@@ -1,8 +1,6 @@
 /**
  * TODO: Cover cases like 1 1/2 tsp
- * TODO: Try to mitigate weird text detections for dashes "-" -> "e" after OCR
- * TODO: decide when to use gram or liter
- *
+ * TODO: add saving to local storage
  */
 
 export const keywords = [
@@ -21,42 +19,71 @@ export const keywords = [
 
 export const imperialToMetricSystem: {
   [key: string]: {
-    metric: string;
-    fn: (value: number) => number;
-    color: string;
+    [key: string]: {
+      fn: (value: number) => number;
+      color: string;
+    };
   };
 } = {
-  teaspoon: { metric: 'ml', fn: (value: number) => value * 5, color: 'red' },
-  tsp: { metric: 'ml', fn: (value: number) => value * 5, color: 'red' },
+  teaspoon: {
+    ml: { fn: (value: number) => value * 4.92892, color: 'red' },
+    g: { fn: (value: number) => value * 5.69, color: 'red' },
+  },
+  tsp: {
+    ml: { fn: (value: number) => value * 4.92892, color: 'red' },
+    g: { fn: (value: number) => value * 5.69, color: 'red' },
+  },
   tablespoon: {
-    metric: 'ml',
-    fn: (value: number) => value * 15,
-    color: 'orange',
+    ml: {
+      fn: (value: number) => value * 14.7868,
+      color: 'orange',
+    },
+    g: {
+      fn: (value: number) => value * 14.175,
+      color: 'orange',
+    },
   },
-  tbsp: { metric: 'ml', fn: (value: number) => value * 15, color: 'orange' },
-  cup: { metric: 'ml', fn: (value: number) => value * 240, color: 'yellow' },
+  tbsp: {
+    ml: {
+      fn: (value: number) => value * 14.7868,
+      color: 'orange',
+    },
+    g: {
+      fn: (value: number) => value * 14.175,
+      color: 'orange',
+    },
+  },
+  cup: {
+    ml: { fn: (value: number) => value * 236.588, color: 'yellow' },
+    g: { fn: (value: number) => value * 240, color: 'yellow' },
+  },
   pound: {
-    metric: 'g',
-    fn: (value: number) => value * 453.592,
-    color: 'green',
+    g: {
+      fn: (value: number) => value * 453.592,
+      color: 'green',
+    },
   },
-  lb: { metric: 'g', fn: (value: number) => value * 453.592, color: 'green' },
-  ounce: { metric: 'g', fn: (value: number) => value * 28.3495, color: 'blue' },
-  oz: { metric: 'g', fn: (value: number) => value * 28.3495, color: 'blue' },
-  inch: { metric: 'cm', fn: (value: number) => value * 2.54, color: 'purple' },
-  in: { metric: 'cm', fn: (value: number) => value * 2.54, color: 'purple' },
+  lb: { g: { fn: (value: number) => value * 453.592, color: 'green' } },
+  ounce: { g: { fn: (value: number) => value * 28.3495, color: 'blue' } },
+  oz: { g: { fn: (value: number) => value * 28.3495, color: 'blue' } },
+  inch: { g: { fn: (value: number) => value * 2.54, color: 'purple' } },
+  in: { g: { fn: (value: number) => value * 2.54, color: 'purple' } },
 };
 
-export const convert = (value: number | undefined, from: string): string => {
+export const convert = (
+  value: number | undefined,
+  from: string,
+  to: string
+): string => {
   if (!value) {
     return from || '';
   }
 
-  if (!imperialToMetricSystem[from || '']) {
+  if (!imperialToMetricSystem[from || ''][to || '']) {
     return `${value} ${from}${value > 1 ? 's' : ''}`;
   }
 
-  const { metric, fn } = imperialToMetricSystem[from];
+  const { fn } = imperialToMetricSystem[from][to];
   const convertedValue = fn(value);
-  return `${Math.round(convertedValue)} ${metric}`;
+  return `${Math.round(convertedValue)} ${to}`;
 };

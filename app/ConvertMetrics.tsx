@@ -1,4 +1,5 @@
 'use client';
+import { HighlightedMetric } from '@/components/HighlightedMetric';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Dialog,
@@ -7,10 +8,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Chunk, findAll } from '@/lib/chunks';
-import { convert, keywords } from '@/lib/metrics';
-import parse from 'html-react-parser';
+import { keywords } from '@/lib/metrics';
+import parse, { HTMLReactParserOptions } from 'html-react-parser';
 import { useEffect, useState } from 'react';
 
 interface ConvertMetricsProps {
@@ -23,7 +25,7 @@ interface ConvertMetricsProps {
  */
 
 export default function ConvertMetrics({ text }: ConvertMetricsProps) {
-  const [formattedHTML, setFormattedHTML] = useState<string>('');
+  const [formattedHTML, setFormattedHTML] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [isConverted, setIsConverted] = useState<boolean>(false);
 
@@ -36,16 +38,16 @@ export default function ConvertMetrics({ text }: ConvertMetricsProps) {
       const currText = text.substr(start, end - start);
 
       if (highlight) {
-        if (!isConverted) return `<mark>${currText}</mark>`;
+        if (!isConverted)
+          return `<mark class='bg-orange-200 pr-1 pl-1'>${currText}</mark>`;
 
-        const convertedMetric = convert(value, metric || '');
-        return `<mark>${convertedMetric}</mark>`;
+        return `<mark id='highlighted-metric' value=${value} metric=${metric} />`;
       } else {
         return currText;
       }
     });
 
-    const formattedHTML = formattedChunks.join('');
+    const formattedHTML = formattedChunks;
 
     setFormattedHTML(formattedHTML);
   }, [text, isConverted]);
@@ -64,6 +66,26 @@ export default function ConvertMetrics({ text }: ConvertMetricsProps) {
     return chunks;
   };
 
+  const parserOptions: HTMLReactParserOptions = {
+    replace(domNode) {
+      if (
+        // @ts-ignore
+        domNode.attribs &&
+        // @ts-ignore
+        domNode.attribs.id === 'highlighted-metric'
+      ) {
+        return (
+          <HighlightedMetric
+            // @ts-ignore
+            value={domNode.attribs.value}
+            // @ts-ignore
+            metric={domNode.attribs.metric}
+          />
+        );
+      }
+    },
+  };
+
   return (
     <Dialog open={open} onOpenChange={() => setOpen(!open)}>
       <DialogTrigger
@@ -74,19 +96,28 @@ export default function ConvertMetrics({ text }: ConvertMetricsProps) {
         Convert metrics
       </DialogTrigger>
       <DialogContent>
-        <p className='whitespace-pre-line'>{parse(`${formattedHTML}`)}</p>
-        <DialogFooter className='flex-col flex'>
-          <div className='flex justify-flex-start items-center'>
-            <Switch
-              id='conversion-mode'
-              checked={isConverted}
-              onCheckedChange={handleSwitchChange}
-            />
-            <Label htmlFor='conversion-mode' className='pl-2'>
-              {isConverted ? 'Converted' : 'Original'}
-            </Label>
-          </div>
-        </DialogFooter>
+        <div className='flex justify-between items-center pt-6'>
+          <h4 className='pr-2 scroll-m-20 text-xl font-semibold tracking-tight'>
+            {!isConverted ? (
+              <mark className='bg-orange-200 pr-1 pl-1'>Original</mark>
+            ) : (
+              <mark className='bg-yellow-200 pr-1 pl-1'>Converted</mark>
+            )}{' '}
+            Recipe
+          </h4>
+          <Switch
+            id='conversion-mode'
+            checked={isConverted}
+            disabled={formattedHTML.length < 1}
+            onCheckedChange={handleSwitchChange}
+          />
+        </div>
+        <Separator className='mb-2' />
+        <p className='whitespace-pre-line'>
+          {formattedHTML.length < 1
+            ? 'Converting ...'
+            : formattedHTML.map((piece) => parse(`${piece}`, parserOptions))}
+        </p>
       </DialogContent>
     </Dialog>
   );
