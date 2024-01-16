@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,21 +20,6 @@ export const metadata: Metadata = {
     'units',
   ],
   authors: [{ name: 'Max Hammer' }],
-  icons: [
-    { rel: 'apple-touch-icon', url: 'icons/apple-touch-icon.png' },
-    { rel: 'android-chrome', url: 'icons/android-chrome-192x192.png' },
-    { rel: 'apple-touch-icon', url: 'icons/apple-touch-icon.png' },
-    {
-      media: '(prefers-color-scheme: light)',
-      url: '/icons/favicon.png',
-      href: '/icons/favicon.png',
-    },
-    {
-      media: '(prefers-color-scheme: dark)',
-      url: '/icons/favicon-dark.png',
-      href: '/icons/favicon-dark.png',
-    },
-  ],
 };
 
 export const viewport: Viewport = {
@@ -41,7 +27,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   minimumScale: 1,
   viewportFit: 'cover',
-  themeColor: [{ media: '(prefers-color-scheme: dark)', color: '#fff' }],
 };
 
 export default function RootLayout({
