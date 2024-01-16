@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 
 interface ConvertMetricsProps {
   text: string;
-  isConverting: boolean;
 }
 
 /**
@@ -24,10 +23,7 @@ interface ConvertMetricsProps {
  * TODO: Highlight metrics in text and convert them correctly
  */
 
-export default function ConvertMetrics({
-  text,
-  isConverting,
-}: ConvertMetricsProps) {
+export default function ConvertMetrics({ text }: ConvertMetricsProps) {
   const [formattedHTML, setFormattedHTML] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [isConverted, setIsConverted] = useState<boolean>(false);
@@ -123,7 +119,7 @@ export default function ConvertMetrics({
         </DialogHeader>
 
         <p className='whitespace-pre-line block'>
-          {formattedHTML.length < 1 || isConverting
+          {formattedHTML.length < 1
             ? 'Converting ...'
             : formattedHTML.map((piece) => parse(`${piece}`, parserOptions))}
         </p>

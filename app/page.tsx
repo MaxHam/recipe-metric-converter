@@ -9,7 +9,6 @@ import { isMobile } from 'react-device-detect';
 export default function Home() {
   const [source, setSource] = useState<string>('');
   const [text, setText] = useState<string>('');
-  const [isConverting, setIsConverting] = useState<boolean>(false);
   const [isSSR, setIsSSR] = useState<boolean>(true);
 
   const handleCapture = (files: FileList | File[]) => {
@@ -21,11 +20,8 @@ export default function Home() {
     }
   };
   const doOCR = (image: string) => {
-    setIsConverting(true);
-
     Tesseract.recognize(image, 'eng').then(({ data: { text } }) => {
       setText(text);
-      setIsConverting(false);
     });
   };
 
@@ -62,7 +58,7 @@ export default function Home() {
       {source && <CropPhoto source={source} onChange={handleCrop} />}
       <div className='w-full flex flex-col justify-start items-center '>
         <FileInput onChange={handleCapture} />
-        {source && <ConvertMetrics isConverting={isConverting} text={text} />}
+        {source && <ConvertMetrics text={text} />}
       </div>
     </main>
   );
