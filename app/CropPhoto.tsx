@@ -2,6 +2,7 @@
 import { Label } from '@/components/ui/label';
 import { debounce } from '@/lib/utils';
 import { useCallback, useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import ReactCrop, { type Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -107,7 +108,8 @@ export default function CropPhoto({ source, onChange }: CropPhotoProps) {
         minWidth={20}
         minHeight={20}
         style={{
-          maxHeight: '40dvh',
+          maxHeight: !isMobile ? '40dvh' : '',
+          maxWidth: !isMobile ? '' : '100%',
           overflow: 'hidden',
           width: 'fit-content',
         }}
