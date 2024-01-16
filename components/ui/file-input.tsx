@@ -13,7 +13,7 @@ interface InputFileProps {
 }
 
 const desktopStyle =
-  'p-2 bg-white hover:bg-gray-100 flex justify-center items-center w-full h-64 px-4 transition border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none';
+  'p-2 bg-white hover:bg-gray-100 flex justify-evenly items-center w-full h-36 px-4 transition border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none';
 
 export function FileInput({ onChange }: InputFileProps) {
   const [isSSR, setIsSSR] = useState(true);

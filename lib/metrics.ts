@@ -87,5 +87,5 @@ export const convert = (
 
   const { fn } = imperialToMetricSystem[from][to];
   const convertedValue = fn(value);
-  return `${Math.round(convertedValue)} ${to}`;
+  return `${Math.round(convertedValue) || ''} ${to}`;
 };

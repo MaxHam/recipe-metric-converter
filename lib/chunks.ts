@@ -155,7 +155,7 @@ const defaultFindChunks = ({
           chunks.push({
             highlight: false,
             start,
-            end,
+            end: end - 1, // trim space at end
             metric: searchWord,
             value,
           });

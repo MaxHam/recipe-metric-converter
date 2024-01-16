@@ -6,12 +6,12 @@ import ReactCrop, { type Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 const TO_RADIANS = Math.PI / 180;
-interface EditPhotoProps {
+interface CropPhotoProps {
   source: string;
   onChange: (output: string) => void;
 }
 
-export default function EditPhoto({ source, onChange }: EditPhotoProps) {
+export default function CropPhoto({ source, onChange }: CropPhotoProps) {
   const [image, setImage] = useState<any>();
   const [crop, setCrop] = useState<Crop>();
 
@@ -99,7 +99,7 @@ export default function EditPhoto({ source, onChange }: EditPhotoProps) {
   }, [crop, image, updateOutput]);
 
   return (
-    <div className='flex flex-col justify-start pb-4 w-full'>
+    <div className='flex flex-col justify-start pb-4 w-full max-h-full'>
       <ReactCrop
         crop={crop}
         onChange={(c) => setCrop(c)}
@@ -107,7 +107,7 @@ export default function EditPhoto({ source, onChange }: EditPhotoProps) {
         minWidth={20}
         minHeight={20}
         style={{
-          maxHeight: '700px',
+          maxHeight: '40dvh',
           overflow: 'hidden',
           width: 'fit-content',
         }}
@@ -115,7 +115,7 @@ export default function EditPhoto({ source, onChange }: EditPhotoProps) {
         <img src={source} onLoad={(e) => setImage(e.target)} />
       </ReactCrop>
 
-      <Label className='text-sm text-muted-foreground pt-2'>
+      <Label className='text-sm text-muted-foreground pt-1'>
         Crop out bullet point markers and other non-text elements for optimal
         results.
       </Label>

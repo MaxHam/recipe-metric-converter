@@ -80,5 +80,6 @@ main {
 }
 
 .dialog {
-  max-height: 100dvh;
+  max-height: 95dvh;
+  width: fit-content;
 }
