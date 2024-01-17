@@ -24,6 +24,7 @@ These instructions will get you a copy of the project up and running on your loc
 - next-pwa
 
 ## Roadmap
+- Zooming of image
 - Save to recipes to local storage
 - Bidirectional Metric Conversion
 - Convert from NextJs to plain React
