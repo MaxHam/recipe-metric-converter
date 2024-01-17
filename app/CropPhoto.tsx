@@ -99,6 +99,11 @@ export default function CropPhoto({ source, onChange }: CropPhotoProps) {
     updateOutput(crop, image);
   }, [crop, image, updateOutput]);
 
+  useEffect(() => {
+    // reset crop when source changes
+    setCrop(undefined);
+  }, [source]);
+
   return (
     <div className='flex flex-col justify-start pb-4 w-full max-h-full'>
       <ReactCrop
